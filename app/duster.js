@@ -24,27 +24,29 @@ function compile_dust(path, curr, prev) {
       var compiledCount = 0;
       for(var i = 0; i < fileCount; i++) {
         var fpath = path + "/" + files[i];
-        fs.readFile(fpath, function(err, data) {
+        
+        (function(fpath) {
+          fs.readFile(fpath, function(err, data) {
           if (err) throw err;
+            var filename = fpath.split("/").reverse()[0].replace(".dust", "");
+            compiled += dust.compile(new String(data), filename);
 
-          var filename = fpath.split("/").reverse()[0].replace(".dust", "");
-          compiled += dust.compile(new String(data), filename);
+            compiledCount++;
+            if(compiledCount === fileCount) {
+              var filepath = output_path + "templates.js";
+              var backendfilepath = backend_output_path + "templates.js";
+              fs.writeFile(filepath, compiled, function(err) {
+                if (err) throw err;
+                console.log('Saved ' + filepath);
+              });
 
-          compiledCount++;
-          if(compiledCount === fileCount) {
-            var filepath = output_path + "templates.js";
-            var backendfilepath = backend_output_path + "templates.js";
-            fs.writeFile(filepath, compiled, function(err) {
-              if (err) throw err;
-              console.log('Saved ' + filepath);
-            });
-
-            fs.writeFile(backendfilepath, "exports.register = function(dust) { "+compiled+" };", function(err) {
-              if (err) throw err;
-              console.log('Saved ' + filepath);
-            });
-          }
-        });
+              fs.writeFile(backendfilepath, "exports.register = function(dust) { "+compiled+" };", function(err) {
+                if (err) throw err;
+                console.log('Saved ' + filepath);
+              });
+            }
+          });
+        })(fpath);
       }
     });
   });

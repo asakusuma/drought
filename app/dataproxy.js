@@ -9,7 +9,7 @@ define('dataproxy', ['base/eventable','base/promise'], function (Eventable, Prom
 		query: function(query) {
 			if(query === "numBoards") {
 				var promise = new Promise();
-				promise.resolve(2)
+				promise.resolve(2);
 				return promise;
 			}
 		}

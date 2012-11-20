@@ -8,7 +8,9 @@ define(function(){
     // 0 = waiting
     // 1 = resolved
     // 2 = failed
-    this.status = 0;
+    this.status = 0,
+    this.resolveArgs = false,
+    this.rejectArgs = false;
   }
 
   Promise.prototype.then = function(successCallback, failureCallback, con) {
@@ -22,13 +24,19 @@ define(function(){
 
   Promise.prototype.resolve = function() {
     this.status = 1;
+    if(this.resolveArgs === false) {
+      this.resolveArgs = arguments;
+    }
     if(this.registered) {
-      this.success.apply(this.context,arguments);
+      this.success.apply(this.context,this.resolveArgs);
     }
   }
 
   Promise.prototype.reject = function() {
     this.status = 2;
+    if(this.rejectArgs === false) {
+      this.rejectArgs = arguments;
+    }
     if(this.registered) {
       this.failure.apply(this.context,arguments);
     }

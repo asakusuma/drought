@@ -13,9 +13,7 @@ define(['base/eventable', 'lib/underscore', 'dustjs-linkedin'],function (Eventab
 		render: function(err, out) {
 			if(err) throw err;
   			this.el.append(out);
-  			console.log(out);
-  			console.log(this.el.html());
-			this.trigger('rendered', 'DUDE');
+			this.trigger('rendered', this.el.html());
 			//this.el.html()
 		}
 	});

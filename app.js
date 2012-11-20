@@ -61,9 +61,7 @@ function(components, routes) {
       page.route = route;
       app.get(route, (function(page) {
         return function(req, res) {
-          page.controller.init(function(html) {
-            console.log("CALLBACK:");
-            console.log(html);
+          page.controller.init(function(event, html) {
             res.render('global', {
               title: page.title,
               markup: html
