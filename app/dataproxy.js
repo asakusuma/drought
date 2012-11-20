@@ -13,7 +13,7 @@ define('dataproxy', ['base/eventable','base/promise', 'cradle', 'async'], functi
 			  host: host || '127.0.0.1',
 			  port: port || 5984
 			});
-
+			this.queries = 0;
 			this.db = new cradle.Connection().database(dbName);
 		},
 		getNumBoards: function(success, error, context) {
@@ -26,9 +26,11 @@ define('dataproxy', ['base/eventable','base/promise', 'cradle', 'async'], functi
 
 		},
 		query: function(query) {
+			this.queries++;
+			console.log("DataProxy query #"+this.queries+": " + JSON.stringify(query));
 			var promise = new Promise();
 			if(query.id) {
-				this.db.get(id, function(err, doc) {
+				this.db.get(query.id, function(err, doc) {
 	    			if(err) {
 	      				promise.reject(err);
 	    			} else {

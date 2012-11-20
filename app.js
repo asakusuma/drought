@@ -22,9 +22,6 @@ process.on('SIGTERM', function () {
 });
 
 requirejs.config({
-    //Pass the top-level main.js/index.js require
-    //function to requirejs so that node modules
-    //are loaded relative to the top-level JS file.
     nodeRequire: require,
     baseUrl: "public/javascripts/",
     paths: {
@@ -37,13 +34,9 @@ templates.register(dust);
 
 requirejs(['components', 'routes'],
 function(components, routes) {
-
-  
-    var page,
-    route;
+  var page, route;
 
   app.engine('dust', cons.dust);
-
   app.configure(function(){
     //app.set('port', process.env.PORT || 3000);
     app.set('views', __dirname + '/views');
@@ -72,7 +65,9 @@ function(components, routes) {
       page.route = route;
       app.get(route, (function(page) {
         return function(req, res) {
-          page.controller.init(function(event, html) {
+          console.log("Page: "+ page);
+          page.controller.init(req.params, function(event, html) {
+            console.log("Base Controller Rendered");
             res.render('global', {
               title: page.title,
               markup: html

@@ -1,46 +1,21 @@
-define(['base/eventable'],function (Eventable) {
+define(['base/eventable', 'lib/underscore', 'dustjs-linkedin'],function (Eventable, _, dust) {
 	var BoardView = new Eventable();
-	BoardView = _.extend(BoardView, {
-		queries: [
-			'Board'
-		],
+	BoardView = _.extend({},BoardView, {
 		init: function(el) {
 			this.el = el;
-			return this.queries;
+			this.data = {};
+			return {
+				entityKey: "boards"
+			};
 		},
-		loadData: function(query, data) {
-			if(data === null) {
-				this.el.html("<h2>Board not found</h2>");
-			} else if(query === 'Board') {
-				this.loadMainBoard(data);
-			}
+		setData: function(query, data) {
+			this.data[query] = JSON.stringify(data);
+			dust.render("index", {numBoards: JSON.stringify(data)}, _.bind(this.render,this));
 		},
-		loadMainBoard: function(data) {
-			this.board = data;
-			dust.render("board", this.board.attributes, _.bind(this.renderBoard, this));
-		},
-		populateBoard: function() {
-			for(var i = 0; i < this.board.get('cards').length; i++) {
-				dust.render("card", this.board.get('cards')[i], _.bind(this.renderCard, this));
-		    }
-		},
-		backendRender: function() {
-
-		},
-		renderCard: function(err, out) {
-			this.grid.add_widget(out, 1, 1);
-		},
-		renderBoard: function(err, out) {
-			out = $(out);
-  			this.renderEl(err, out);
-  			this.grid = out.find('ul').gridster({
-		        widget_margins: [10, 10],
-		        widget_base_dimensions: [300, 300]
-		    }).data('gridster');
-		    this.populateBoard();
-		},
-		renderEl: function(err, out) {
-  			this.el.html(out);
+		render: function(err, out) {
+			if(err) throw err;
+  			this.el.append(out);
+			this.trigger('rendered', this.el.html());
 		}
 	});
 	return BoardView;
