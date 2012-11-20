@@ -1,7 +1,8 @@
 define(['base/eventable', 'views/index', 'jquery', 'dataproxy'],function (Eventable, View, $, DataFactory) {
 	var IndexController = function() {};
+	IndexController = function() {};
 	IndexController.prototype = new Eventable();
-	IndexController = _.extend(IndexController.prototype, {
+	_.extend(IndexController.prototype, {
 		init: function(params, callback) {
 			this.el = $('<div></div>');
 			this.view = new View();
