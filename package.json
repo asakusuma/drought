@@ -21,6 +21,7 @@
     "consolidate": "*",
     "ejs-locals": "*",
     "less-middleware": "*",
-    "swig": "~0.12.1"
+    "swig": "~0.12.1",
+    "socket":"*"
   }
 }
