@@ -1,6 +1,7 @@
 define(['base/eventable', 'lib/underscore', 'dustjs-linkedin'],function (Eventable, _, dust) {
-	var IndexView = new Eventable();
-	IndexView = _.extend({},IndexView, {
+	var IndexView = function() {};
+	IndexView.prototype = new Eventable();
+	_.extend(IndexView.prototype, {
 		init: function(el) {
 			this.el = el;
 			this.data = {};

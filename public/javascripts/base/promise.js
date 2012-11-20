@@ -14,8 +14,8 @@ define(function(){
   }
 
   Promise.prototype.then = function(successCallback, failureCallback, con) {
-    this.success = _.once(successCallback);
-    this.failure = _.once(failureCallback);
+    this.success = successCallback;
+    this.failure = failureCallback;
     this.registered = true;
     if(con) { this.context = con; }
     if(this.status === 1) { this.resolve(); }

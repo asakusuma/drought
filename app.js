@@ -21,6 +21,8 @@ process.on('SIGTERM', function () {
   server.close();
 });
 
+
+
 requirejs.config({
     nodeRequire: require,
     baseUrl: "public/javascripts/",
@@ -65,9 +67,8 @@ function(components, routes) {
       page.route = route;
       app.get(route, (function(page) {
         return function(req, res) {
-          console.log("Page: "+ page);
-          page.controller.init(req.params, function(event, html) {
-            console.log("Base Controller Rendered");
+          var controller = new page.controllerClass();
+          controller.init(req.params, function(event, html) {
             res.render('global', {
               title: page.title,
               markup: html
