@@ -5,6 +5,7 @@
 
 var input_path = "./views"; // directory of dust templates are stored with .dust file extension
 var output_path = "./public/javascripts/"; // directory where the compiled .js files should be saved to
+var backend_output_path = "./app/";
 
 var fs = require('fs');
 var dust = require('dustjs-linkedin');
@@ -32,7 +33,13 @@ function compile_dust(path, curr, prev) {
           compiledCount++;
           if(compiledCount === fileCount) {
             var filepath = output_path + "templates.js";
+            var backendfilepath = backend_output_path + "templates.js";
             fs.writeFile(filepath, compiled, function(err) {
+              if (err) throw err;
+              console.log('Saved ' + filepath);
+            });
+
+            fs.writeFile(backendfilepath, "exports.register = function(dust) { "+compiled+" };", function(err) {
               if (err) throw err;
               console.log('Saved ' + filepath);
             });

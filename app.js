@@ -1,8 +1,3 @@
-
-/**
- * Module dependencies.
- */
-
 var express = require('express')
   , routes = require('./routes')
   , http = require('http')
@@ -13,9 +8,8 @@ var express = require('express')
   , compiler = require('./app/duster.js')
   , $ = require('jquery')
   , _ = require('underscore')
-  , cons = require('consolidate');
-
-  
+  , cons = require('consolidate')
+  , templates = require('./app/templates.js');
 
 requirejs.config({
     //Pass the top-level main.js/index.js require
@@ -24,14 +18,19 @@ requirejs.config({
     nodeRequire: require,
     baseUrl: "public/javascripts/",
     paths: {
-      "app": "/app",
-      "jquery": "/public/javascripts/jquery-1.8.2.min.js"
+      "app": "../../app",
+      "dataproxy": "../../app/dataproxy"
     }
 });
 
-requirejs(['components'],
-function(Components) {
-  var app = express();
+templates.register(dust);
+
+requirejs(['components', 'routes'],
+function(components, routes) {
+
+  var app = express(),
+    page,
+    route;
 
   app.engine('dust', cons.dust);
 
@@ -53,6 +52,27 @@ function(Components) {
   app.configure('development', function(){
     app.use(express.errorHandler());
   });
+
+
+  //Setup routes that hit pages
+  for(route in routes) {
+    page = components.page[routes[route]];
+    if(page) {
+      page.route = route;
+      app.get(route, (function(page) {
+        return function(req, res) {
+          page.controller.init(function(html) {
+            console.log("CALLBACK:");
+            console.log(html);
+            res.render('global', {
+              title: page.title,
+              markup: html
+            });
+          });
+        };
+      })(page));
+    }
+  }
 
   app.get('/', routes.index);
 

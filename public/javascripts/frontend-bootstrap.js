@@ -1,1 +1,1 @@
-alert("Bootstrap!");
+console.log('Bootstrap frontend app');

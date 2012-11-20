@@ -21,15 +21,15 @@ define(function(){
   }
 
   Promise.prototype.resolve = function() {
+    this.status = 1;
     if(this.registered) {
-      this.status = 1;
       this.success.apply(this.context,arguments);
     }
   }
 
   Promise.prototype.reject = function() {
+    this.status = 2;
     if(this.registered) {
-      this.status = 2;
       this.failure.apply(this.context,arguments);
     }
   }

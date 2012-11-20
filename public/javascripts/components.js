@@ -4,7 +4,7 @@ define([
 	'pages/index',
 	'pages/board',
 
-	'views/Board'
+	'views/board'
 	],function (
 		controllerIndex,
 
