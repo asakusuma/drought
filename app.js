@@ -1,4 +1,7 @@
 var express = require('express')
+  , app = express()
+  , server = require('http').createServer(app)
+  , io = require('socket.io').listen(server)
   , routes = require('./routes')
   , http = require('http')
   , path = require('path')
@@ -28,14 +31,14 @@ templates.register(dust);
 requirejs(['components', 'routes'],
 function(components, routes) {
 
-  var app = express(),
-    page,
+  
+    var page,
     route;
 
   app.engine('dust', cons.dust);
 
   app.configure(function(){
-    app.set('port', process.env.PORT || 3000);
+    //app.set('port', process.env.PORT || 3000);
     app.set('views', __dirname + '/views');
     app.set('view engine', 'dust');
     app.use(express.favicon());
@@ -53,6 +56,7 @@ function(components, routes) {
     app.use(express.errorHandler());
   });
 
+   server.listen(3000);
 
   //Setup routes that hit pages
   for(route in routes) {
@@ -71,11 +75,19 @@ function(components, routes) {
       })(page));
     }
   }
-
   app.get('/', routes.index);
 
+  io.sockets.on('connection', function (socket) {
+    socket.emit('news', { hello: 'world' });
+    socket.on('my other event', function (data) {
+      console.log(data);
+    });
+  });
+
+/*
   http.createServer(app).listen(app.get('port'), function(){
     console.log("Express server listening on port " + app.get('port'));
     
   });
+*/
 });
