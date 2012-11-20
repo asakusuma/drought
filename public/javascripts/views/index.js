@@ -4,11 +4,13 @@ define(['base/eventable', 'lib/underscore', 'dustjs-linkedin'],function (Eventab
 		init: function(el) {
 			this.el = el;
 			this.data = {};
-			return "numBoards";
+			return {
+				entityKey: "boards"
+			};
 		},
 		setData: function(query, data) {
-			this.data[query] = data;
-			dust.render("index", {numBoards: data}, _.bind(this.render,this));
+			this.data[query] = JSON.stringify(data);
+			dust.render("index", {numBoards: JSON.stringify(data)}, _.bind(this.render,this));
 		},
 		render: function(err, out) {
 			if(err) throw err;

@@ -14,6 +14,13 @@ var express = require('express')
   , cons = require('consolidate')
   , templates = require('./app/templates.js');
 
+process.on('uncaughtException', function (err) {
+  server.close();
+});
+process.on('SIGTERM', function () {
+  server.close();
+});
+
 requirejs.config({
     //Pass the top-level main.js/index.js require
     //function to requirejs so that node modules
@@ -78,16 +85,9 @@ function(components, routes) {
   app.get('/', routes.index);
 
   io.sockets.on('connection', function (socket) {
-    socket.emit('news', { hello: 'world' });
+    //socket.emit('news', { hello: 'world' });
     socket.on('my other event', function (data) {
       console.log(data);
     });
   });
-
-/*
-  http.createServer(app).listen(app.get('port'), function(){
-    console.log("Express server listening on port " + app.get('port'));
-    
-  });
-*/
 });
