@@ -1,9 +1,10 @@
 // duster.js  
 // Watch directory of dust.js templates and automatically compile them
 // by Dan McGrady http://dmix.ca
+// modified by Asa Kusuma
 
 var input_path = "./templates"; // directory of dust templates are stored with .dust file extension
-var output_path = "./public/javascripts/templates/"; // directory where the compiled .js files should be saved to
+var output_path = "./public/javascripts/"; // directory where the compiled .js files should be saved to
 
 var fs = require('fs');
 var dust = require('dustjs-linkedin');

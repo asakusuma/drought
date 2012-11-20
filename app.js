@@ -23,10 +23,13 @@ requirejs.config({
     //function to requirejs so that node modules
     //are loaded relative to the top-level JS file.
     nodeRequire: require,
-    baseUrl: "public/javascripts/"
+    baseUrl: "public/javascripts/",
+    paths: {
+      "app": "/app"
+    }
 });
 
-requirejs(['views/userlist'],
+requirejs(['views/userlist', 'app/routing'],
 function(userListView) {
   var app = express();
 
