@@ -5,18 +5,17 @@
 
 var express = require('express')
   , routes = require('./routes')
-  , user = require('./routes/user')
   , http = require('http')
   , path = require('path')
   , requirejs = require('requirejs')
   , dust = require('dustjs-linkedin')
   , dustfs = require('dustfs')
-  , compiler = require('./app/duster.js');
+  , compiler = require('./app/duster.js')
+  , $ = require('jquery')
+  , _ = require('underscore')
+  , cons = require('consolidate');
 
-  var loading = dustfs.dirs('templates', function(err) {
-    if(err) console.log('Errors: ' + err);
-    else console.log('Loading done!');
-  });
+  
 
 requirejs.config({
     //Pass the top-level main.js/index.js require
@@ -25,18 +24,21 @@ requirejs.config({
     nodeRequire: require,
     baseUrl: "public/javascripts/",
     paths: {
-      "app": "/app"
+      "app": "/app",
+      "jquery": "/public/javascripts/jquery-1.8.2.min.js"
     }
 });
 
-requirejs(['views/userlist', 'app/routing'],
-function(userListView) {
+requirejs(['components'],
+function(Components) {
   var app = express();
+
+  app.engine('dust', cons.dust);
 
   app.configure(function(){
     app.set('port', process.env.PORT || 3000);
     app.set('views', __dirname + '/views');
-    app.set('view engine', 'ejs');
+    app.set('view engine', 'dust');
     app.use(express.favicon());
     app.use(express.logger('dev'));
     app.use(express.bodyParser());
@@ -52,16 +54,10 @@ function(userListView) {
     app.use(express.errorHandler());
   });
 
-  var loading = dustfs.dirs('templates', function(err) {
-    if(err) console.log('Errors: ' + err);
-    else console.log('Loading done!');
-});
-
   app.get('/', routes.index);
-  app.get('/users', user.list);
 
   http.createServer(app).listen(app.get('port'), function(){
     console.log("Express server listening on port " + app.get('port'));
-    userListView.run();
+    
   });
 });

@@ -1,4 +1,4 @@
-define( 'Eventable', function(){
+define(['jquery'],function($){
 
   function Eventable() {
     this.proxy = $({});

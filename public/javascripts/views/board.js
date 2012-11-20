@@ -1,6 +1,6 @@
 define(['base/eventable'],function (Eventable) {
 	var BoardView = new Eventable();
-	BoardView = _.extend(IndexView, {
+	BoardView = _.extend(BoardView, {
 		queries: [
 			'Board'
 		],

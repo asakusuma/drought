@@ -1,4 +1,4 @@
-define( 'Promise', function(){
+define(function(){
 
   function Promise() {
     this.success = function() {},
