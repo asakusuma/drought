@@ -36,11 +36,8 @@ define('dataproxy', ['base/eventable','base/promise', 'cradle', 'async'], functi
 	    			}
 	  			});
 			} else if(query.entityKey) {
-				console.log('GET: '+ query.entityKey);
 				this.db.view(query.entityKey+'/all', {}, function(err, doc) {
-				    doc.map(function(item) {
-				    	promise.resolve(item);
-				    });
+					promise.resolve(doc);
 				 });
 				return promise;
 			} else {
