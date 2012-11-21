@@ -24,6 +24,7 @@
     "swig": "~0.12.1",
     "socket":"*",
     "cradle":"*",
-    "async":"*"
+    "async":"*",
+    "jsdom":"*"
   }
 }

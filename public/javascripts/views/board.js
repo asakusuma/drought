@@ -1,4 +1,15 @@
-define(['base/eventable', 'lib/underscore', 'dustjs-linkedin', 'async'],function (Eventable, _, dust, async) {
+define([
+	'base/eventable', 
+	'lib/underscore', 
+	'dustjs-linkedin', 
+	'async', 
+	'lib/gridster'],function (
+		Eventable, 
+		_, 
+		dust, 
+		async, 
+		gridster
+	) {
 	var BoardView = function() {};
 	BoardView.prototype = new Eventable();
 	_.extend(BoardView.prototype, {
@@ -35,11 +46,18 @@ define(['base/eventable', 'lib/underscore', 'dustjs-linkedin', 'async'],function
   					callback(null, out);
   				});
   			}, _.bind(function(error, results) {
-  				var html = "";
+  				var html = ""
+  					ul = this.el.find('ul');
   				for(var i = 0; i < results.length; i++) {
   					html += results[i];
   				}
-  				this.el.find('ul').append(html);
+  				ul.append(html);
+  				
+  				ul.gridster({
+        			widget_margins: [10, 10],
+        			widget_base_dimensions: [140, 140]
+    			});
+
   				this.render();
   			},this));
 		},
