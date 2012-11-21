@@ -28,7 +28,6 @@ define('dataproxy', [
 			  host: host || '127.0.0.1',
 			  port: port || 5984
 			});
-      console.log(Schema.obj);
 			this.db = new cradle.Connection().database(dbName);
       this.hash = {};
 		},
@@ -93,7 +92,6 @@ define('dataproxy', [
                     entityKey: entityKey,
                     ids: doc[entityKey]
                   }).then(function(data) {
-                    console.log(data);
                     cb(null, {
                       entityKey: entityKey,
                       data: data
@@ -103,7 +101,6 @@ define('dataproxy', [
                   });
                 }, this), _.bind(function(err, results) {
                   for(var i = 0; i < results.length; i++) {
-                    console.log(results);
                     doc[results[i].entityKey] = results[i].data;
                   }
                   promise.resolve(this.createModel(doc));
