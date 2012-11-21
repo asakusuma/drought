@@ -1,4 +1,5 @@
 define({
 	window: window,
-	document: document
+	document: document,
+	browser: true
 });

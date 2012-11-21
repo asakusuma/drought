@@ -75,7 +75,8 @@ function(components, routes, schema) {
           controller.init(req.params, function(event, html) {
             res.render('global', {
               title: page.title,
-              markup: html
+              markup: html,
+              route: req.route.path
             });
           });
         };
