@@ -9,6 +9,6 @@
   <body>
   	{markup|s}
   	<script src="/socket.io/socket.io.js"></script>
-    <script data-main="javascripts/frontend-bootstrap.js" src="javascripts/lib/require.js"></script>
+    <script data-main="/javascripts/frontend-bootstrap.js" src="/javascripts/lib/require.js"></script>
   </body>
 </html>

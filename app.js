@@ -9,6 +9,7 @@ var express = require('express')
   , dust = require('dustjs-linkedin')
   , dustfs = require('dustfs')
   , compiler = require('./app/duster.js')
+  , dataproxyCompiler = require('./app/dataproxyCompiler.js')
   , $ = require('jquery')
   , _ = require('underscore')
   , cons = require('consolidate')
@@ -38,7 +39,7 @@ requirejs.config({
 templates.register(dust);
 
 requirejs(['components', 'routes', 'schema'],
-function(components, routes) {
+function(components, routes, schema) {
   var page, route;
 
   app.engine('dust', cons.dust);
@@ -83,7 +84,7 @@ function(components, routes) {
   }
 
   //Output schema file for client
-  app.get('schemas',function(req, res){
+  app.get('/schema.js',function(req, res){
     res.setHeader('Content-Type', 'text/javascript');
     res.send(schema.script);
   });
