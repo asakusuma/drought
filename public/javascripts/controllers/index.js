@@ -11,7 +11,7 @@ define(['base/eventable', 'views/index', 'jquery', 'dataproxy'],function (Eventa
 			DataFactory.query(query).then(function(num) {
 				this.view.setData(query, num);
 			}, function() {
-
+				this.view.setDataError(query);
 			}, this);
 		}
 	});

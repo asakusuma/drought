@@ -14,6 +14,7 @@ var express = require('express')
   , cons = require('consolidate')
   , templates = require('./app/templates.js');
 
+
 process.on('uncaughtException', function (err) {
   server.close();
 });
@@ -28,13 +29,14 @@ requirejs.config({
     baseUrl: "public/javascripts/",
     paths: {
       "app": "../../app",
+      "schema": "../../app/schema",
       "dataproxy": "../../app/dataproxy"
     }
 });
 
 templates.register(dust);
 
-requirejs(['components', 'routes'],
+requirejs(['components', 'routes', 'schema'],
 function(components, routes) {
   var page, route;
 
@@ -78,7 +80,12 @@ function(components, routes) {
       })(page));
     }
   }
-  app.get('/', routes.index);
+
+  //Output schema file for client
+  app.get('schemas',function(req, res){
+    res.setHeader('Content-Type', 'text/javascript');
+    res.send(schema.script);
+  });
 
   io.sockets.on('connection', function (socket) {
     //socket.emit('news', { hello: 'world' });
