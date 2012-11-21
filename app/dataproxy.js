@@ -1,4 +1,18 @@
-define('dataproxy', ['base/eventable','base/promise', 'cradle', 'async', 'schema'], function (Eventable, Promise, Cradle, Async, Schema) {
+define('dataproxy', [
+    'base/eventable',
+    'base/promise',
+    'cradle',
+    'async',
+    'schema',
+    'models/model'
+  ], function (
+    Eventable, 
+    Promise, 
+    Cradle, 
+    Async, 
+    Schema,
+    Model
+  ) {
 	var DataProxy = new Eventable();
 	DataProxy = _.extend(DataProxy, {
 		init: function(cradle, async) {
@@ -16,6 +30,7 @@ define('dataproxy', ['base/eventable','base/promise', 'cradle', 'async', 'schema
 			});
       console.log(Schema.obj);
 			this.db = new cradle.Connection().database(dbName);
+      this.hash = {};
 		},
 		getNumBoards: function(success, error, context) {
 			var promise = new Promise();
@@ -26,6 +41,29 @@ define('dataproxy', ['base/eventable','base/promise', 'cradle', 'async', 'schema
 		_somePrivateMethod: function() {
 
 		},
+    createModel: function(attrs) {
+      if(this.hash[attrs['_id']]) {
+        console.log("Cache hit!");
+        return this.hash[attrs['_id']];
+      } else {
+        var n = new Model(attrs);
+        this.hash[attrs['_id']] = n;
+        return n;
+      }
+    },
+    request: function(query) {
+      if(query.ids) {
+        return this.query(query);
+      } else if(query.id) {
+        if(this.hash[query.id]) {
+          console.log("Cache Hit!");
+          var promise = new Promise();
+          promise.resolve(this.hash[query.id]);
+          return promise;
+        }
+      }
+      return this.query(query);
+    },
 		query: function(query) {
 			var promise = new Promise();
 			if(query.id) {
@@ -35,6 +73,7 @@ define('dataproxy', ['base/eventable','base/promise', 'cradle', 'async', 'schema
           } else {
             var foreignKeys = [];
 
+            //Determine if any fields contain foreign IDS
             for(var key in doc) {
               var schemaName = key;
               if(schemaName[schemaName.length-1] === 's') {
@@ -47,11 +86,10 @@ define('dataproxy', ['base/eventable','base/promise', 'cradle', 'async', 'schema
             }
 
             if(foreignKeys.length > 0) {
-
-
+              //Replace foreign IDS with actual data
               this.async.map(foreignKeys, _.bind(
                 function(entityKey, cb) {
-                  this.query({
+                  this.request({
                     entityKey: entityKey,
                     ids: doc[entityKey]
                   }).then(function(data) {
@@ -63,31 +101,25 @@ define('dataproxy', ['base/eventable','base/promise', 'cradle', 'async', 'schema
                   }, function() {
                     cb("Bad query", null);
                   });
-                  
-                  cb(1);
-                }
-                ,this), function(err, results) {
-                
-                for(var i = 0; i < results.length; i++) {
-                  doc[results[i].entityKey] = results[i].data;
-                }
-                promise.resolve(doc);
-              }); 
-
+                }, this), _.bind(function(err, results) {
+                  for(var i = 0; i < results.length; i++) {
+                    console.log(results);
+                    doc[results[i].entityKey] = results[i].data;
+                  }
+                  promise.resolve(this.createModel(doc));
+              },this)); 
             } else {
-              promise.resolve(doc);
+              promise.resolve(this.createModel(doc));
             }
           }
         }, this));
         return promise;
       } else if(query.ids && query.entityKey) {
-        console.log("TRY");
         this.async.map(query.ids, _.bind(
           function(id, cb) {
-            this.db.view(query.entityKey + '/all', { key: id }, function(err, doc) {
-              console.log(doc);
-              cb(err, doc[0].value);
-            });
+            this.db.view(query.entityKey + '/all', { key: id }, _.bind(function(err, doc) {
+              cb(err, this.createModel(doc[0].value));
+            },this));
           },
           this), function(err, results) {
             promise.resolve(results);

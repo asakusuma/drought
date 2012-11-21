@@ -8,7 +8,7 @@ define(['base/eventable', 'views/index', 'jquery', 'dataproxy'],function (Eventa
 			this.view = new View();
 			this.view.on('rendered', callback);
 			var query = this.view.init(this.el);
-			DataFactory.query(query).then(function(num) {
+			DataFactory.request(query).then(function(num) {
 				this.view.setData(query, num);
 			}, function() {
 				this.view.setDataError(query);

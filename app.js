@@ -14,13 +14,14 @@ var express = require('express')
   , cons = require('consolidate')
   , templates = require('./app/templates.js');
 
-
+/*
 process.on('uncaughtException', function (err) {
   server.close();
 });
 process.on('SIGTERM', function () {
   server.close();
 });
+*/
 
 
 

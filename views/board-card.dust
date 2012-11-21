@@ -1,0 +1,3 @@
+<li data-row="{row}" data-col="{col}" data-sizex="1" data-sizey="1">
+{name}
+</li>

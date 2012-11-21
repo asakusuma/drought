@@ -10,7 +10,7 @@ define(['base/eventable', 'views/board', 'jquery', 'dataproxy'],function (Eventa
 			var query = this.view.init(this.el);
 			if(params.id) {
 				query.id = params.id;
-				DataFactory.query(query).then(function(num) {
+				DataFactory.request(query).then(function(num) {
 					this.view.setData(query, num);
 				}, function() {
 
